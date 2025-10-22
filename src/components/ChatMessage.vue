@@ -28,27 +28,46 @@ const renderedContent = computed(() => {
 </script>
 
 <template>
-  <div class="message" :class="message.role">
+  <div class="message-group" :class="message.role">
+    <div class="avatar user"> {{ message.role === 'user' ? '🤷' : '💡' }}</div>
     <div class="message-content">
       <div class="message-text" v-html="renderedContent"></div>
     </div>
   </div>
+  
 </template>
 
 <style scoped>
+.message-group {
+    display: flex;
+    gap: 12px;
+    max-width: 800px;
+    margin: 0 auto;
+    width: 100%;
+    animation: fadeIn 0.4s ease-out;    
+}
+
+.message-group.user{
+  flex-direction: row-reverse;
+}
+
 .message {
   display: flex;
   padding: 1rem;
+  border-radius: 8px;
+  min-width: 80%;
 }
 
 .message.user {
   background-color: var(--bg-user);
   border-radius: 18px;
   align-self: flex-end;
-  max-width: 70%;
+  text-align: right;
 }
 
 .message.assistant {
+  border: 2px solid var(--bg-user);
+  background-color: var(--bg-assistant);
   align-self: flex-start;
   width: 100%;
 }
@@ -68,6 +87,22 @@ const renderedContent = computed(() => {
   color: var(--text-primary);
   line-height: 1.6;
   word-break: break-word;
+}
+
+.user .message-text {
+  text-align: center;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2px dashed var(--bg-user);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
 }
 
 /* 마크다운 스타일링 */
