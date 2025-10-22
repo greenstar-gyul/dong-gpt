@@ -5,10 +5,17 @@ import axios from 'axios'
 export const useChatStore = defineStore('chat', () => {
   const messages = ref([])
   const isLoading = ref(false)
-  
+  const selectedModel = ref('gpt-5-nano')
+
   // 환경변수에서 가져오기
   const API_KEY = import.meta.env.VITE_OPENAI_API_KEY
   const API_URL = import.meta.env.VITE_API_URL
+
+  // 사용 가능한 모델 목록
+  const availableModels = [
+    { value: 'gpt-5-nano', label: 'GPT-5 Nano' },
+    { value: 'gpt-5-mini', label: 'GPT-5 Mini' },
+  ]
   
   const sendMessage = async (content) => {
     const userMessage = {
@@ -24,11 +31,17 @@ export const useChatStore = defineStore('chat', () => {
       const response = await axios.post(
         API_URL,
         {
-          model: 'gpt-5-nano',
-          messages: messages.value.map(msg => ({
-            role: msg.role,
-            content: msg.content
-          }))
+          model: selectedModel.value,
+          messages: [
+            {
+              role: 'system',
+              content: 'You are a helpful assistant. When providing code, always use proper markdown code blocks with language specification (e.g., ```javascript, ```python). Format your responses clearly with markdown.'
+            },
+            ...messages.value.map(msg => ({
+              role: msg.role,
+              content: msg.content
+            }))
+          ]
         },
         {
           headers: {
@@ -64,6 +77,8 @@ export const useChatStore = defineStore('chat', () => {
   return {
     messages,
     isLoading,
+    selectedModel,
+    availableModels,
     sendMessage
   }
 })

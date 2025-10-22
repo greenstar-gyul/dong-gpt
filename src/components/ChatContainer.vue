@@ -23,6 +23,13 @@ watch(() => chatStore.messages.length, async () => {
         :key="message.id"
         :message="message"
       />
+      <div v-if="chatStore.isLoading" class="typing-indicator">
+        <div class="typing-bubble">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -36,10 +43,58 @@ watch(() => chatStore.messages.length, async () => {
 }
 
 .messages {
-  max-width: 800px;
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  width: 100%;
+  padding: 0 2rem;
+}
+
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.typing-bubble {
+  background-color: var(--bg-secondary);
+  border-radius: 18px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.typing-bubble span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--text-secondary);
+  animation: typing 1.4s infinite;
+}
+
+.typing-bubble span:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing-bubble span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-bubble span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%, 60%, 100% {
+    opacity: 0.3;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-8px);
+  }
 }
 </style>
