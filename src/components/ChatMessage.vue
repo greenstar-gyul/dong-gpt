@@ -114,9 +114,20 @@ const renderedContent = computed(() => {
   margin: 0.5rem 0;
 }
 
+.message-text :deep(pre code) {
+  color: #c9d1d9 !important;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+  background: none;
+}
+
 .message-text :deep(code) {
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.9em;
+  background-color: rgba(175, 184, 193, 0.2);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+  color: #e83e8c;
 }
 
 .message-text :deep(p) {
