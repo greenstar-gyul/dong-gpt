@@ -28,12 +28,11 @@ const handleKeydown = (e) => {
       <textarea
         v-model="inputText"
         @keydown="handleKeydown"
-        placeholder="메시지를 입력하세요..."
+        placeholder="메시지를 입력하세요... (Enter: 전송, Shift+Enter: 줄바꿈)"
         rows="1"
       />
-      <button @click="sendMessage" :disabled="!inputText.trim()">
-        전송
-      </button>
+      <button class="send-button" @click="sendMessage" :disabled="!inputText.trim()">
+       ➤ </button>
     </div>
   </div>
 </template>
@@ -55,14 +54,17 @@ const handleKeydown = (e) => {
 
 textarea {
   flex: 1;
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-family: inherit;
-  font-size: 1rem;
-  resize: none;
-  min-height: 44px;
-  max-height: 200px;
+    min-height: 50px;
+    max-height: 150px;
+    padding: 12px 16px;
+    border: 2px solid #97c7f7 ;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    outline: none;
+    resize: none;
+    transition: border-color 0.3s;
+    overflow-y: auto;
 }
 
 textarea:focus {
@@ -71,14 +73,19 @@ textarea:focus {
 }
 
 button {
-  padding: 0.75rem 1.5rem;
-  background-color: var(--accent-color);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #97c7f7 0%, var(--accent-color) 100%);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 button:hover:not(:disabled) {
@@ -86,7 +93,7 @@ button:hover:not(:disabled) {
 }
 
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.8;
   cursor: not-allowed;
 }
 </style>

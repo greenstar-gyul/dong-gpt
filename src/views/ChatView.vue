@@ -6,7 +6,7 @@ import ChatInput from '../components/ChatInput.vue'
 <template>
   <div class="chat-view">
     <div class="chat-header">
-      <h1>DongGPT</h1>
+      <h1>DongGPT ✈️</h1>
     </div>
     <ChatContainer />
     <ChatInput />
@@ -24,12 +24,12 @@ import ChatInput from '../components/ChatInput.vue'
 .chat-header {
   padding: 1rem 2rem;
   border-bottom: 1px solid var(--border-color);
-  background-color: var(--bg-secondary);
+  background: linear-gradient(135deg, #7cb9f5 0%, var(--bg-secondary) 100%);
 }
 
 .chat-header h1 {
   margin: 0;
   font-size: 1.5rem;
-  color: var(--text-primary);
+  color: var(--bg-primary);
 }
 </style>
