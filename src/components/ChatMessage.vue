@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { marked } from 'marked'
-import hljs from 'highlight.js'
+import { marked } from '@/utils/markdown'
 
 const props = defineProps({
   message: {
@@ -10,20 +9,8 @@ const props = defineProps({
   }
 })
 
-// marked 설정
-marked.setOptions({
-  highlight: function(code, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      return hljs.highlight(code, { language: lang }).value
-    }
-    return hljs.highlightAuto(code).value
-  },
-  breaks: true,
-  gfm: true
-})
-
 const renderedContent = computed(() => {
-  return marked(props.message.content)
+  return marked.parse(props.message.content)
 })
 </script>
 
@@ -34,7 +21,7 @@ const renderedContent = computed(() => {
       <div class="message-text" v-html="renderedContent"></div>
     </div>
   </div>
-  
+
 </template>
 
 <style scoped>
@@ -44,7 +31,7 @@ const renderedContent = computed(() => {
     max-width: 800px;
     margin: 0 auto;
     width: 100%;
-    animation: fadeIn 0.4s ease-out;    
+    animation: fadeIn 0.4s ease-out;
 }
 
 .message-group.user{
@@ -115,13 +102,12 @@ const renderedContent = computed(() => {
 }
 
 .message-text :deep(pre code) {
-  color: #c9d1d9 !important;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.9em;
   background: none;
 }
 
-.message-text :deep(code) {
+.message-text :deep(:not(pre) > code) {
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 0.9em;
   background-color: rgba(175, 184, 193, 0.2);
