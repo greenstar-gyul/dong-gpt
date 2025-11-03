@@ -1,16 +1,29 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, nextTick } from 'vue'
 import { useChatStore } from '../stores/chat'
 
 const chatStore = useChatStore()
 const inputText = ref('')
+const textareaRef = ref(null)
+
+const adjustTextareaHeight = () => {
+  if (!textareaRef.value) return
+
+  textareaRef.value.style.height = 'auto'
+  textareaRef.value.style.height = textareaRef.value.scrollHeight + 'px'
+}
 
 const sendMessage = async () => {
   if (!inputText.value.trim()) return
-  
+
   let message = inputText.value;
   inputText.value = ''
-  
+
+  await nextTick()
+  if (textareaRef.value) {
+    textareaRef.value.style.height = 'auto'
+  }
+
   await chatStore.sendMessage(message)
 }
 
@@ -19,6 +32,10 @@ const handleKeydown = (e) => {
     e.preventDefault()
     sendMessage()
   }
+}
+
+const handleInput = () => {
+  adjustTextareaHeight()
 }
 </script>
 
@@ -39,7 +56,9 @@ const handleKeydown = (e) => {
         </option>
       </select>
       <textarea
+        ref="textareaRef"
         v-model="inputText"
+        @input="handleInput"
         @keydown="handleKeydown"
         placeholder="메시지를 입력하세요... (Enter: 전송, Shift+Enter: 줄바꿈)"
         rows="1"
@@ -104,13 +123,15 @@ const handleKeydown = (e) => {
 
 textarea {
   flex: 1;
+    height: auto;
     min-height: 50px;
-    max-height: 150px;
+    max-height: 200px;
     padding: 12px 16px;
     border: 2px solid #97c7f7 ;
     border-radius: 8px;
     font-size: 15px;
     font-family: inherit;
+    line-height: 1.5;
     outline: none;
     resize: none;
     transition: border-color 0.3s;

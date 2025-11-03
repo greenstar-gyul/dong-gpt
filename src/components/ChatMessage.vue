@@ -10,7 +10,11 @@ const props = defineProps({
 })
 
 const renderedContent = computed(() => {
-  return marked.parse(props.message.content)
+  // assistant 메시지만 마크다운 렌더링
+  if (props.message.role === 'assistant') {
+    return marked.parse(props.message.content)
+  }
+  return props.message.content
 })
 </script>
 
@@ -18,7 +22,8 @@ const renderedContent = computed(() => {
   <div class="message-group" :class="message.role">
     <div class="avatar user"> {{ message.role === 'user' ? '🤷' : '💡' }}</div>
     <div class="message-content">
-      <div class="message-text" v-html="renderedContent"></div>
+      <div v-if="message.role === 'assistant'" class="message-text" v-html="renderedContent"></div>
+      <div v-else class="message-text">{{ renderedContent }}</div>
     </div>
   </div>
 
@@ -61,6 +66,12 @@ const renderedContent = computed(() => {
 
 .message-content {
   width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+}
+
+.message-group.user .message-content {
+  background-color: rgba(0, 0, 0, 0.08);
 }
 
 .message-role {
@@ -77,7 +88,8 @@ const renderedContent = computed(() => {
 }
 
 .user .message-text {
-  text-align: center;
+  text-align: left;
+  white-space: pre-wrap;
 }
 
 .avatar {

@@ -9,13 +9,11 @@ export const useChatStore = defineStore('chat', () => {
 
   // 환경변수에서 가져오기
   const API_KEY = import.meta.env.VITE_OPENAI_API_KEY
-  // const BASE_URL = import.meta.env.VITE_API_URL
 
   // OpenAI 클라이언트 초기화
   const openai = new OpenAI({
     apiKey: API_KEY,
-    // baseURL: BASE_URL,
-    dangerouslyAllowBrowser: true
+    dangerouslyAllowBrowser: true // 테스트 전용 (실서비스는 백엔드 프록시)
   })
 
   // 사용 가능한 모델 목록
@@ -35,30 +33,43 @@ export const useChatStore = defineStore('chat', () => {
     isLoading.value = true
 
     try {
-      const response = await openai.chat.completions.create({
+      const response = await openai.responses.create({
         model: selectedModel.value,
-        messages: [
+        input: [
           {
             role: 'system',
-            content: 'You are a helpful assistant. When providing code, always use proper markdown code blocks with language specification (e.g., ```javascript, ```python). Format your responses clearly with markdown.'
+            content: [
+              {
+                type: 'text',
+                text: 'You are a helpful assistant. When providing code, always use proper markdown code blocks with language specification (e.g., ```javascript, ```python). Format your responses clearly with markdown.'
+              }
+            ]
           },
           ...messages.value.map(msg => ({
             role: msg.role,
-            content: msg.content
+            content: [
+              {
+                type: 'text',
+                text: msg.content
+              }
+            ]
           }))
-        ]
+        ],
+        max_output_tokens: 15000 // ✅ 응답 토큰 제한 (필요시 조정)
       })
 
       const aiMessage = {
         id: Date.now() + 1,
         role: 'assistant',
-        content: response.choices[0].message.content,
+        content:
+          response.output?.[0]?.content?.[0]?.text ??
+          response.output_text ??
+          '(응답 없음)',
         model: response.model
       }
       messages.value.push(aiMessage)
 
-      console.log('API 응답:', response);
-
+      console.log('API 응답:', response)
     } catch (error) {
       console.error('API 호출 실패:', error)
       const errorMessage = {
